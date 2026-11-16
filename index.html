@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — Manajemen Proyek &amp; Tugas Harian</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Pacifico&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="bg-mesh"></div>
+    <div class="bg-grid"></div>
+
+    <svg class="decor-item decor-ribbon-tl" viewBox="0 0 180 180" fill="none">
+      <defs>
+        <linearGradient id="gradRibbon1" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55" />
+          <stop offset="100%" stop-color="#818cf8" stop-opacity="0.35" />
+        </linearGradient>
+      </defs>
+      <path d="M22 18C74 12 126 42 134 90C142 138 96 168 48 156C14 148 4 114 26 92C48 70 94 84 112 118" stroke="url(#gradRibbon1)" stroke-width="18" stroke-linecap="round" />
+    </svg>
+
+    <svg class="decor-item decor-star-tr" viewBox="0 0 160 160" fill="none">
+      <defs>
+        <linearGradient id="gradStar1" x1="15" y1="15" x2="145" y2="145" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#fb923c" stop-opacity="0.65" />
+          <stop offset="100%" stop-color="#f472b6" stop-opacity="0.35" />
+        </linearGradient>
+      </defs>
+      <path d="M80 10L96 58L146 52L108 86L134 130L86 108L54 148L58 98L12 80L58 62L80 10Z" fill="url(#gradStar1)" />
+    </svg>
+
+    <svg class="decor-item decor-note-bl" viewBox="0 0 150 130" fill="none">
+      <rect x="18" y="20" width="110" height="86" rx="14" transform="rotate(-8 18 20)" fill="#ffffff" fill-opacity="0.72" stroke="#93c5fd" stroke-width="2" />
+      <line x1="36" y1="44" x2="104" y2="35" stroke="#93c5fd" stroke-width="4" stroke-linecap="round" />
+      <line x1="39" y1="62" x2="96" y2="54" stroke="#c4b5fd" stroke-width="4" stroke-linecap="round" />
+      <line x1="42" y1="80" x2="84" y2="74" stroke="#fdba74" stroke-width="4" stroke-linecap="round" />
+    </svg>
+
+    <svg class="decor-item decor-pencil-br" viewBox="0 0 160 120" fill="none">
+      <g transform="rotate(-24 80 60)">
+        <rect x="24" y="46" width="96" height="22" rx="6" fill="#a5b4fc" fill-opacity="0.65" />
+        <rect x="24" y="46" width="22" height="22" rx="5" fill="#fda4af" fill-opacity="0.8" />
+        <polygon points="120,46 144,57 120,68" fill="#fed7aa" />
+        <polygon points="136,53 144,57 136,61" fill="#3b82f6" />
+      </g>
+    </svg>
+  </div>
+
+  <main id="auth-view" class="auth-wrapper">
+    <div class="auth-topbar">
+      <button type="button" class="btn btn-glass btn-sm" id="auth-theme-btn" aria-label="Ganti Tema">
+        <span class="icon-slot" data-icon="moon"></span>
+        <span id="auth-theme-label">Mode Gelap</span>
+      </button>
+    </div>
+
+    <section class="auth-card glass-panel">
+      <div class="auth-brand">
+        <div class="brand-emblem">
+          <span class="icon-slot" data-icon="layers"></span>
+        </div>
+        <h1 class="script-title">TaskFlow</h1>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab active" id="tab-login" data-auth-tab="login">Masuk</button>
+        <button type="button" class="auth-tab" id="tab-register" data-auth-tab="register">Daftar Akun</button>
+      </div>
+
+      <form id="form-login" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <div class="input-with-icon">
+            <span class="input-icon" data-icon="mail"></span>
+            <input type="email" id="login-email" placeholder="nama@email.com" autocomplete="email" required />
+          </div>
+          <small class="field-error" id="err-login-email"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Kata Sandi</label>
+          <div class="input-with-icon">
+            <span class="input-icon" data-icon="lock"></span>
+            <input type="password" id="login-password" placeholder="Masukkan kata sandi" autocomplete="current-password" required />
+            <button type="button" class="btn-eye" data-toggle-pass="login-password" aria-label="Tampilkan sandi">
+              <span class="icon-slot" data-icon="eye"></span>
+            </button>
+          </div>
+          <small class="field-error" id="err-login-password"></small>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <span class="icon-slot" data-icon="login"></span>
+          <span>Masuk ke Dashboard</span>
+        </button>
+
+        <div class="auth-divider"><span>atau</span></div>
+
+        <button type="button" id="btn-demo-login" class="btn btn-pastel btn-block">
+          <span class="icon-slot" data-icon="sparkles"></span>
+          <span>Masuk dengan Akun Demo</span>
+        </button>
+      </form>
+
+      <form id="form-register" class="auth-form hidden" novalidate>
+        <div class="form-group">
+          <label for="reg-name">Nama Lengkap</label>
+          <div class="input-with-icon">
+            <span class="input-icon" data-icon="user"></span>
+            <input type="text" id="reg-name" placeholder="Contoh: William Alexia Christian" autocomplete="name" required />
+          </div>
+          <small class="field-error" id="err-reg-name"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-email">Email</label>
+          <div class="input-with-icon">
+            <span class="input-icon" data-icon="mail"></span>
+            <input type="email" id="reg-email" placeholder="nama@email.com" autocomplete="email" required />
+          </div>
+          <small class="field-error" id="err-reg-email"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-password">Kata Sandi (min. 6 karakter)</label>
+          <div class="input-with-icon">
+            <span class="input-icon" data-icon="lock"></span>
+            <input type="password" id="reg-password" placeholder="Minimal 6 karakter" autocomplete="new-password" required />
+            <button type="button" class="btn-eye" data-toggle-pass="reg-password" aria-label="Tampilkan sandi">
+              <span class="icon-slot" data-icon="eye"></span>
+            </button>
+          </div>
+          <small class="field-error" id="err-reg-password"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-confirm">Konfirmasi Kata Sandi</label>
+          <div class="input-with-icon">
+            <span class="input-icon" data-icon="shield"></span>
+            <input type="password" id="reg-confirm" placeholder="Ulangi kata sandi" autocomplete="new-password" required />
+          </div>
+          <small class="field-error" id="err-reg-confirm"></small>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          <span class="icon-slot" data-icon="userPlus"></span>
+          <span>Buat Akun Baru</span>
+        </button>
+      </form>
+    </section>
+  </main>
+
+  <div id="app-view" class="app-shell hidden">
+
+    <header class="navbar glass-panel">
+      <div class="nav-left">
+        <a href="#dashboard" class="nav-brand" data-nav="dashboard">
+          <span class="brand-emblem sm">
+            <span class="icon-slot" data-icon="layers"></span>
+          </span>
+          <span class="script-logo">TaskFlow</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Menu Utama">
+          <button type="button" class="nav-btn active" data-nav="dashboard">
+            <span class="icon-slot" data-icon="home"></span>
+            <span>Dashboard</span>
+          </button>
+          <button type="button" class="nav-btn" data-nav="projects">
+            <span class="icon-slot" data-icon="folder"></span>
+            <span>Proyek</span>
+          </button>
+          <button type="button" class="nav-btn" data-nav="tasks">
+            <span class="icon-slot" data-icon="checkSquare"></span>
+            <span>Tugas</span>
+          </button>
+          <button type="button" class="nav-btn" data-nav="calendar">
+            <span class="icon-slot" data-icon="calendar"></span>
+            <span>Kalender</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="nav-right">
+        <button type="button" class="btn btn-glass btn-icon" id="btn-open-backup" title="Ekspor / Impor Data JSON">
+          <span class="icon-slot" data-icon="database"></span>
+        </button>
+
+        <button type="button" class="btn btn-glass btn-icon" id="app-theme-btn" title="Ganti Tema Terang / Gelap">
+          <span class="icon-slot" data-icon="moon"></span>
+        </button>
+
+        <div class="user-chip" id="user-chip">
+          <span class="user-avatar" id="user-avatar">U</span>
+          <span class="user-name" id="user-display-name">Pengguna</span>
+        </div>
+
+        <button type="button" class="btn btn-danger-soft btn-sm" id="btn-logout">
+          <span class="icon-slot" data-icon="logout"></span>
+          <span>Keluar</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="main-container">
+
+      <section id="section-dashboard" class="page-section active">
+        <div class="page-header">
+          <div>
+            <h2 class="section-heading" id="welcome-heading">Halo, Pengguna!</h2>
+            <p class="section-sub" id="today-date-label">Ringkasan progres proyek dan tugas harianmu.</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn btn-pastel" id="dash-add-project">
+              <span class="icon-slot" data-icon="folderPlus"></span>
+              <span>Proyek Baru</span>
+            </button>
+            <button type="button" class="btn btn-primary" id="dash-add-task">
+              <span class="icon-slot" data-icon="plus"></span>
+              <span>Tugas Baru</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card glass-panel stat-blue">
+            <div class="stat-icon-box">
+              <span class="icon-slot" data-icon="folder"></span>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Proyek</span>
+              <strong class="stat-value" id="stat-projects">0</strong>
+            </div>
+          </article>
+
+          <article class="stat-card glass-panel stat-amber">
+            <div class="stat-icon-box">
+              <span class="icon-slot" data-icon="circle"></span>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">To-Do</span>
+              <strong class="stat-value" id="stat-todo">0</strong>
+            </div>
+          </article>
+
+          <article class="stat-card glass-panel stat-indigo">
+            <div class="stat-icon-box">
+              <span class="icon-slot" data-icon="clock"></span>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">In-Progress</span>
+              <strong class="stat-value" id="stat-progress">0</strong>
+            </div>
+          </article>
+
+          <article class="stat-card glass-panel stat-mint">
+            <div class="stat-icon-box">
+              <span class="icon-slot" data-icon="checkCircle"></span>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Done</span>
+              <strong class="stat-value" id="stat-done">0</strong>
+            </div>
+          </article>
+        </div>
+
+        <div class="glass-panel progress-overview-card">
+          <div class="progress-overview-top">
+            <div>
+              <h3>Penyelesaian Tugas Keseluruhan</h3>
+              <p class="muted-text" id="overall-progress-desc">0 dari 0 tugas telah diselesaikan</p>
+            </div>
+            <span class="pill-badge pill-primary" id="overall-progress-pct">0%</span>
+          </div>
+          <div class="progress-track lg">
+            <div class="progress-fill" id="overall-progress-bar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="dashboard-columns">
+          <div class="glass-panel widget-card">
+            <div class="widget-header">
+              <div class="widget-title-wrap">
+                <span class="widget-icon warn" data-icon="alertCircle"></span>
+                <h3>Tugas Deadline Dekat</h3>
+              </div>
+              <button type="button" class="btn btn-glass btn-xs" data-nav="tasks">Lihat Semua</button>
+            </div>
+            <div id="upcoming-tasks-list" class="upcoming-list"></div>
+          </div>
+
+          <div class="dashboard-right-stack">
+            <div class="glass-panel widget-card">
+              <div class="widget-header">
+                <div class="widget-title-wrap">
+                  <span class="widget-icon info" data-icon="barChart"></span>
+                  <h3>Progres per Proyek</h3>
+                </div>
+                <button type="button" class="btn btn-glass btn-xs" data-nav="projects">Kelola</button>
+              </div>
+              <div id="project-progress-list" class="project-progress-list"></div>
+            </div>
+
+            <div class="glass-panel widget-card timer-widget">
+              <div class="widget-header">
+                <div class="widget-title-wrap">
+                  <span class="widget-icon accent" data-icon="timer"></span>
+                  <h3>Focus Timer</h3>
+                </div>
+                <div class="timer-modes">
+                  <button type="button" class="timer-mode-btn active" data-minutes="25">Fokus 25m</button>
+                  <button type="button" class="timer-mode-btn" data-minutes="5">Istirahat 5m</button>
+                </div>
+              </div>
+              <div class="timer-body">
+                <div class="timer-display" id="timer-display">25:00</div>
+                <div class="timer-controls">
+                  <button type="button" class="btn btn-primary btn-sm" id="btn-timer-toggle">
+                    <span class="icon-slot" data-icon="play"></span>
+                    <span id="timer-toggle-text">Mulai</span>
+                  </button>
+                  <button type="button" class="btn btn-glass btn-sm" id="btn-timer-reset">
+                    <span class="icon-slot" data-icon="rotateCcw"></span>
+                    <span>Reset</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-projects" class="page-section">
+        <div class="page-header">
+          <div>
+            <h2 class="section-heading">Daftar Proyek</h2>
+            <p class="section-sub">Kelola proyek aktif, tenggat waktu, dan pantau penyelesaian tugas di dalamnya.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-new-project">
+            <span class="icon-slot" data-icon="folderPlus"></span>
+            <span>Tambah Proyek</span>
+          </button>
+        </div>
+
+        <div class="toolbar glass-panel">
+          <div class="search-box">
+            <span class="input-icon" data-icon="search"></span>
+            <input type="text" id="filter-project-search" placeholder="Cari nama atau deskripsi proyek..." />
+          </div>
+          <select id="filter-project-status" class="select-control">
+            <option value="all">Semua Status Proyek</option>
+            <option value="Aktif">Aktif</option>
+            <option value="Perencanaan">Perencanaan</option>
+            <option value="Selesai">Selesai</option>
+          </select>
+        </div>
+
+        <div id="projects-grid" class="projects-grid"></div>
+      </section>
+
+      <section id="section-tasks" class="page-section">
+        <div class="page-header">
+          <div>
+            <h2 class="section-heading">Manajemen Tugas</h2>
+            <p class="section-sub">Klik lingkaran checklist untuk menyelesaikan tugas seketika, atau seret kartu antar kolom.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="btn-new-task">
+            <span class="icon-slot" data-icon="plus"></span>
+            <span>Tambah Tugas</span>
+          </button>
+        </div>
+
+        <div class="toolbar glass-panel">
+          <div class="search-box">
+            <span class="input-icon" data-icon="search"></span>
+            <input type="text" id="filter-task-search" placeholder="Cari judul atau deskripsi tugas (Tekan /)..." />
+          </div>
+          <select id="filter-task-project" class="select-control">
+            <option value="all">Semua Proyek</option>
+          </select>
+          <select id="filter-task-status" class="select-control">
+            <option value="all">Semua Status</option>
+            <option value="To-Do">To-Do</option>
+            <option value="In-Progress">In-Progress</option>
+            <option value="Done">Done</option>
+          </select>
+          <select id="filter-task-priority" class="select-control">
+            <option value="all">Semua Prioritas</option>
+            <option value="Tinggi">Prioritas Tinggi</option>
+            <option value="Sedang">Prioritas Sedang</option>
+            <option value="Rendah">Prioritas Rendah</option>
+          </select>
+          <button type="button" class="btn btn-glass btn-sm" id="btn-reset-filters">
+            <span class="icon-slot" data-icon="rotateCcw"></span>
+            <span>Reset</span>
+          </button>
+        </div>
+
+        <div class="kanban-board">
+          <div class="kanban-column glass-panel" data-status="To-Do">
+            <div class="kanban-col-header col-todo">
+              <div class="col-title-group">
+                <span class="status-dot dot-todo"></span>
+                <h3>To-Do</h3>
+              </div>
+              <span class="col-count" id="count-col-todo">0</span>
+            </div>
+            <div class="kanban-dropzone" id="col-todo" data-status="To-Do"></div>
+          </div>
+
+          <div class="kanban-column glass-panel" data-status="In-Progress">
+            <div class="kanban-col-header col-progress">
+              <div class="col-title-group">
+                <span class="status-dot dot-progress"></span>
+                <h3>In-Progress</h3>
+              </div>
+              <span class="col-count" id="count-col-progress">0</span>
+            </div>
+            <div class="kanban-dropzone" id="col-progress" data-status="In-Progress"></div>
+          </div>
+
+          <div class="kanban-column glass-panel" data-status="Done">
+            <div class="kanban-col-header col-done">
+              <div class="col-title-group">
+                <span class="status-dot dot-done"></span>
+                <h3>Done</h3>
+              </div>
+              <span class="col-count" id="count-col-done">0</span>
+            </div>
+            <div class="kanban-dropzone" id="col-done" data-status="Done"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-calendar" class="page-section">
+        <div class="page-header">
+          <div>
+            <h2 class="section-heading">Kalender Deadline</h2>
+            <p class="section-sub">Pantau jadwal tenggat proyek dan tugas dalam tampilan bulanan.</p>
+          </div>
+          <div class="calendar-nav-group">
+            <button type="button" class="btn btn-glass btn-icon" id="cal-prev-month" aria-label="Bulan Sebelumnya">
+              <span class="icon-slot" data-icon="chevronLeft"></span>
+            </button>
+            <span class="cal-month-label" id="cal-month-label">November 2026</span>
+            <button type="button" class="btn btn-glass btn-icon" id="cal-next-month" aria-label="Bulan Berikutnya">
+              <span class="icon-slot" data-icon="chevronRight"></span>
+            </button>
+            <button type="button" class="btn btn-pastel btn-sm" id="cal-today-btn">Hari Ini</button>
+          </div>
+        </div>
+
+        <div class="glass-panel calendar-wrapper">
+          <div class="calendar-weekdays">
+            <div>Min</div>
+            <div>Sen</div>
+            <div>Sel</div>
+            <div>Rab</div>
+            <div>Kam</div>
+            <div>Jum</div>
+            <div>Sab</div>
+          </div>
+          <div id="calendar-grid" class="calendar-grid"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <button type="button" id="help-fab" class="help-fab" aria-label="Buka Panduan Penggunaan">
+    <span class="help-fab-bear" aria-hidden="true">
+      <svg viewBox="0 0 80 80" fill="none">
+        <path d="M31 15C28 10 21 11 21 16C21 20 28 24 31 26C34 24 41 20 41 16C41 11 34 10 31 15Z" fill="#fb7185" transform="translate(-4 -4) scale(0.68)" />
+        <path d="M31 15C28 10 21 11 21 16C21 20 28 24 31 26C34 24 41 20 41 16C41 11 34 10 31 15Z" fill="#fb7185" transform="translate(36 -4) scale(0.68)" />
+        <path d="M23 14 Q28 20 33 25" stroke="#1e1e26" stroke-width="2.5" stroke-linecap="round" />
+        <path d="M57 14 Q52 20 47 25" stroke="#1e1e26" stroke-width="2.5" stroke-linecap="round" />
+
+        <circle cx="19" cy="28" r="10.5" fill="#18181f" />
+        <circle cx="19" cy="28" r="5.5" fill="#fdba74" />
+        <circle cx="61" cy="28" r="10.5" fill="#18181f" />
+        <circle cx="61" cy="28" r="5.5" fill="#fdba74" />
+
+        <ellipse cx="40" cy="45" rx="26" ry="23" fill="#18181f" />
+
+        <path d="M27 26C30 21 36 20 40 22C44 20 50 21 53 26C51 30 47 29 44 31C41 29 39 29 36 31C33 29 29 30 27 26Z" fill="#f8fafc" />
+
+        <path d="M25 37 Q30 34 34 37" stroke="#60a5fa" stroke-width="2.6" stroke-linecap="round" />
+        <path d="M46 37 Q50 34 55 37" stroke="#60a5fa" stroke-width="2.6" stroke-linecap="round" />
+
+        <circle cx="30" cy="44" r="4.6" fill="#ffffff" />
+        <circle cx="30.8" cy="44" r="3" fill="#1e3a8a" />
+        <circle cx="29.4" cy="42.4" r="1.4" fill="#ffffff" />
+
+        <circle cx="50" cy="44" r="4.6" fill="#ffffff" />
+        <circle cx="49.2" cy="44" r="3" fill="#1e3a8a" />
+        <circle cx="48.4" cy="42.4" r="1.4" fill="#ffffff" />
+
+        <ellipse cx="22" cy="50" rx="3.5" ry="2" fill="#fb7185" fill-opacity="0.55" />
+        <ellipse cx="58" cy="50" rx="3.5" ry="2" fill="#fb7185" fill-opacity="0.55" />
+
+        <ellipse cx="40" cy="53.5" rx="7.5" ry="5.5" fill="#fecdd3" />
+        <ellipse cx="40" cy="51.2" rx="3.4" ry="2.2" fill="#f43f5e" />
+        <path d="M36.5 55 Q40 58 43.5 55" stroke="#be123c" stroke-width="2" stroke-linecap="round" fill="none" />
+      </svg>
+    </span>
+    <span class="help-fab-label">Help?</span>
+  </button>
+
+  <div id="modal-project" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-project-title">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3 id="modal-project-title">Tambah Proyek Baru</h3>
+        <button type="button" class="btn-close-modal" data-close-modal="modal-project" aria-label="Tutup">
+          <span class="icon-slot" data-icon="x"></span>
+        </button>
+      </div>
+
+      <form id="form-project" class="modal-body" novalidate>
+        <input type="hidden" id="project-id" />
+
+        <div class="form-group">
+          <label for="project-name">Nama Proyek <span class="req">*</span></label>
+          <input type="text" id="project-name" placeholder="Contoh: Website Organisasi Mahasiswa" required />
+          <small class="field-error" id="err-project-name"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="project-desc">Deskripsi Proyek</label>
+          <textarea id="project-desc" rows="3" placeholder="Jelaskan tujuan dan ruang lingkup proyek..."></textarea>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="project-deadline">Tanggal Deadline <span class="req">*</span></label>
+            <input type="date" id="project-deadline" required />
+            <small class="field-error" id="err-project-deadline"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="project-status">Status Proyek</label>
+            <select id="project-status">
+              <option value="Aktif">Aktif</option>
+              <option value="Perencanaan">Perencanaan</option>
+              <option value="Selesai">Selesai</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-glass" data-close-modal="modal-project">Batal</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="icon-slot" data-icon="check"></span>
+            <span>Simpan Proyek</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-task" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modal-task-title">
+    <div class="modal-card glass-panel modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-task-title">Tambah Tugas Baru</h3>
+        <button type="button" class="btn-close-modal" data-close-modal="modal-task" aria-label="Tutup">
+          <span class="icon-slot" data-icon="x"></span>
+        </button>
+      </div>
+
+      <form id="form-task" class="modal-body" novalidate>
+        <input type="hidden" id="task-id" />
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="task-title">Judul Tugas <span class="req">*</span></label>
+            <input type="text" id="task-title" placeholder="Contoh: Rancang Wireframe Halaman Utama" required />
+            <small class="field-error" id="err-task-title"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="task-project">Proyek Terkait <span class="req">*</span></label>
+            <select id="task-project" required></select>
+            <small class="field-error" id="err-task-project"></small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="task-desc">Deskripsi Tugas</label>
+          <textarea id="task-desc" rows="2" placeholder="Catatan detail atau kriteria selesai tugas..."></textarea>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="task-deadline">Deadline <span class="req">*</span></label>
+            <input type="date" id="task-deadline" required />
+            <small class="field-error" id="err-task-deadline"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="task-status">Status</label>
+            <select id="task-status">
+              <option value="To-Do">To-Do</option>
+              <option value="In-Progress">In-Progress</option>
+              <option value="Done">Done</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="task-priority">Prioritas</label>
+            <select id="task-priority">
+              <option value="Sedang">Sedang</option>
+              <option value="Tinggi">Tinggi</option>
+              <option value="Rendah">Rendah</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Langkah Sub-tugas (Checklist)</label>
+          <div class="subtask-input-row">
+            <input type="text" id="subtask-new-input" placeholder="Tambah langkah kecil lalu klik +..." />
+            <button type="button" class="btn btn-pastel btn-sm" id="btn-add-subtask">
+              <span class="icon-slot" data-icon="plus"></span>
+              <span>Tambah</span>
+            </button>
+          </div>
+          <ul id="modal-subtask-list" class="modal-subtask-list"></ul>
+        </div>
+
+        <div class="form-group">
+          <label for="task-attachment">Lampiran File / Gambar (Maks. 1.5 MB)</label>
+          <div class="file-upload-box" id="file-upload-box">
+            <input type="file" id="task-attachment" accept="image/*,.pdf,.doc,.docx,.txt,.zip" />
+            <div class="file-upload-placeholder">
+              <span class="icon-slot" data-icon="paperclip"></span>
+              <span>Pilih berkas gambar atau dokumen untuk dilampirkan</span>
+            </div>
+          </div>
+          <small class="field-error" id="err-task-attachment"></small>
+          <div id="task-attachment-preview" class="attachment-chip hidden"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-glass" data-close-modal="modal-task">Batal</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="icon-slot" data-icon="check"></span>
+            <span>Simpan Tugas</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-attachment" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3 id="att-modal-filename">Pratinjau Lampiran</h3>
+        <button type="button" class="btn-close-modal" data-close-modal="modal-attachment" aria-label="Tutup">
+          <span class="icon-slot" data-icon="x"></span>
+        </button>
+      </div>
+      <div class="modal-body att-preview-body" id="att-preview-container"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-glass" data-close-modal="modal-attachment">Tutup</button>
+        <a id="att-download-link" class="btn btn-primary" download>
+          <span class="icon-slot" data-icon="download"></span>
+          <span>Unduh Lampiran</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-confirm" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card glass-panel modal-sm">
+      <div class="modal-header">
+        <h3 id="confirm-title">Konfirmasi Hapus</h3>
+        <button type="button" class="btn-close-modal" data-close-modal="modal-confirm" aria-label="Tutup">
+          <span class="icon-slot" data-icon="x"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message" class="confirm-text">Apakah kamu yakin ingin menghapus data ini?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-glass" data-close-modal="modal-confirm">Batal</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-yes">
+          <span class="icon-slot" data-icon="trash"></span>
+          <span>Ya, Hapus</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-backup" class="modal-backdrop hidden" role="dialog" aria-modal="true">
+    <div class="modal-card glass-panel modal-sm">
+      <div class="modal-header">
+        <h3>Backup &amp; Restore Data</h3>
+        <button type="button" class="btn-close-modal" data-close-modal="modal-backup" aria-label="Tutup">
+          <span class="icon-slot" data-icon="x"></span>
+        </button>
+      </div>
+      <div class="modal-body backup-body">
+        <p class="muted-text">Simpan salinan proyek dan tugasmu ke file JSON atau pulihkan dari cadangan sebelumnya.</p>
+        <button type="button" class="btn btn-primary btn-block" id="btn-export-json">
+          <span class="icon-slot" data-icon="download"></span>
+          <span>Unduh Backup (.JSON)</span>
+        </button>
+        <label class="btn btn-pastel btn-block file-btn-label">
+          <span class="icon-slot" data-icon="upload"></span>
+          <span>Impor File Backup (.JSON)</span>
+          <input type="file" id="input-import-json" accept=".json" hidden />
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal-help" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="help-modal-title">
+    <div class="modal-card glass-panel modal-help-card">
+      <div class="modal-header">
+        <div class="help-header-title">
+          <span class="help-mini-badge">
+            <span class="icon-slot" data-icon="helpCircle"></span>
+          </span>
+          <div>
+            <h3 id="help-modal-title">Panduan Penggunaan TaskFlow</h3>
+            <p class="muted-text small">Ikuti langkah bergambar di bawah ini untuk memaksimalkan setiap fitur.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-close-modal" data-close-modal="modal-help" aria-label="Tutup Panduan">
+          <span class="icon-slot" data-icon="x"></span>
+        </button>
+      </div>
+
+      <div class="help-steps-nav" id="help-steps-nav" role="tablist"></div>
+
+      <div class="modal-body help-body" id="help-step-content"></div>
+
+      <div class="modal-footer help-footer">
+        <span class="help-step-counter" id="help-step-counter">Langkah 1 dari 5</span>
+        <div class="help-footer-btns">
+          <button type="button" class="btn btn-glass btn-sm" id="btn-help-prev">
+            <span class="icon-slot" data-icon="chevronLeft"></span>
+            <span>Sebelumnya</span>
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-help-next">
+            <span>Selanjutnya</span>
+            <span class="icon-slot" data-icon="chevronRight"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <script src="crud.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
